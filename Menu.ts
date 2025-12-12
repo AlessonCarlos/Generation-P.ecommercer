@@ -13,25 +13,24 @@ export function main() {
 
     while (true) {
 
-        console.log(colors.bg.black, colors.fg.yellow,
-            "***************************************************");
-        console.log("                                                     ");
-        console.log("                   PC EXPRESS                         ");
-        console.log("           Loja de Peças de Computador               ");
-        console.log("                                                     ");
+                console.log(colors.bg.black, colors.fg.yellow,
+        "*************************************************");
+        console.log("*                                                   *");
+        console.log("*                    PC EXPRESS                     *");
+        console.log("*           Loja de Peças de Computador             *");
+        console.log("*                                                   *");
         console.log("*****************************************************");
-        console.log("                                                     ");
-        console.log("            1 - Cadastrar Produto                    ");
-        console.log("            2 - Listar Todos os Produtos             ");
-        console.log("            3 - Buscar Produto por ID                ");
-        console.log("            4 - Atualizar Produto                    ");
-        console.log("            5 - Deletar Produto                      ");
-        console.log("            6 - Sair do Sistema                      ");
-        console.log("                                                     ");
-        console.log("*****************************************************");
-        console.log("                                                     ",
-            colors.reset
-        );
+        console.log("*                                                   *");
+        console.log("*             1 - Cadastrar Produto                 *");
+        console.log("*             2 - Listar Todos os Produtos          *");
+        console.log("*             3 - Buscar Produto por ID             *");
+        console.log("*             4 - Atualizar Produto                 *");
+        console.log("*             5 - Deletar Produto                   *");
+        console.log("*             6 - Sair do Sistema                   *");
+        console.log("*                                                   *");
+        console.log("*****************************************************",
+        colors.reset);
+
 
         console.log("Escolha uma opção: ");
         opcao = readlinesync.questionInt("");
@@ -46,9 +45,9 @@ export function main() {
         switch (opcao) {
 
             // ➤ CADASTRAR
-            case 1:
-                console.log(colors.fg.whitestrong,
-                    "\n\nCADASTRAR NOVO PRODUTO:\n");
+            // CADASTRAR
+            case 1: {
+                console.log(colors.fg.whitestrong, "\n\nCADASTRAR NOVO PRODUTO:\n");
 
                 let nome = readlinesync.question("Nome do produto: ");
 
@@ -59,7 +58,6 @@ export function main() {
                 console.log("4 - Armazenamento");
                 console.log("5 - Placas-mãe");
                 let categoriaOp = readlinesync.questionInt("");
-                
                 let categoria = "";
                 switch (categoriaOp) {
                     case 1: categoria = "Processadores"; break;
@@ -67,33 +65,29 @@ export function main() {
                     case 3: categoria = "Memórias RAM"; break;
                     case 4: categoria = "Armazenamento"; break;
                     case 5: categoria = "Placas-mãe"; break;
-                    default:
-                        console.log(colors.fg.red, "\nCategoria inválida!");
-                        KeyPress();
-                        break;
+                    default: categoria = "Outros"; break;
                 }
 
                 let preco = readlinesync.questionFloat("\nPreço (R$): ");
                 let quantidade = readlinesync.questionInt("Quantidade em estoque: ");
                 let marca = readlinesync.question("Marca: ");
+                let descricao = readlinesync.question("Descrição / especificações: ");
 
-                // cria o produto
                 const novoProduto = new Produtos(
-                        0,
-                        nome,
-                        categoria,
-                        preco,
-                        quantidade,
-                        marca,
-                        descricao   // ← vem do seu menu
-                    );
-
+                    0,           // id será gerado no controller
+                    nome,
+                    categoria,
+                    preco,
+                    quantidade,
+                    marca,
+                    descricao     // especificações (campo extra da subclasse)
+                );
 
                 produtosController.cadastrar(novoProduto);
-
+                console.log(colors.fg.green, "\n✅ Produto cadastrado com sucesso!", colors.reset);
                 KeyPress();
                 break;
-
+            }
 
             // ➤ LISTAR TODOS
             case 2:
@@ -115,49 +109,52 @@ export function main() {
                 break;
 
 
-            // ➤ ATUALIZAR
-            case 4:
-                console.log(colors.fg.whitestrong, "\n\nATUALIZAR PRODUTO:\n");
+             // ATUALIZAR 
+            case 4: {
+                console.log(colors.fg.whitestrong, "\n\nATUALIZAR PRODUTO (SUBSTITUIR COMPLETO):\n");
 
-                let idAtualizar = readlinesync.questionInt("Digite o ID: ");
+                let idAtualizar = readlinesync.questionInt("Digite o ID do produto que deseja atualizar: ");
 
-                // verifica se existe
-                let existente = produtosController["listarInterno"](idAtualizar);
-                if (existente == null) {
-                    console.log(colors.fg.red, "\nProduto não encontrado!");
-                    KeyPress();
-                    break;
+                // Pedir todos os campos novamente (replace completo)
+                let novoNome = readlinesync.question("Novo nome: ");
+                console.log("\nEscolha a categoria: ");
+                console.log("1 - Processadores");
+                console.log("2 - Placas de Vídeo");
+                console.log("3 - Memórias RAM");
+                console.log("4 - Armazenamento");
+                console.log("5 - Placas-mãe");
+                let categoriaOp2 = readlinesync.questionInt("");
+                let novaCategoria = "";
+                switch (categoriaOp2) {
+                    case 1: novaCategoria = "Processadores"; break;
+                    case 2: novaCategoria = "Placas de Vídeo"; break;
+                    case 3: novaCategoria = "Memórias RAM"; break;
+                    case 4: novaCategoria = "Armazenamento"; break;
+                    case 5: novaCategoria = "Placas-mãe"; break;
+                    default: novaCategoria = "Outros"; break;
                 }
 
-                console.log("\nDigite o novo nome (ou ENTER para manter): ");
-                let novoNome = readlinesync.question("");
+                let novoPreco = readlinesync.questionFloat("\nNovo preço (R$): ");
+                let novaQuantidade = readlinesync.questionInt("Nova quantidade em estoque: ");
+                let novaMarca = readlinesync.question("Nova marca: ");
+                let novaDescricao = readlinesync.question("Nova descrição / especificações: ");
 
-                console.log("Digite o novo preço (ou 0 para manter): ");
-                let novoPreco = readlinesync.questionFloat("");
-
-                console.log("Digite a nova quantidade (ou -1 para manter): ");
-                let novaQuantidade = readlinesync.questionInt("");
-
-                console.log("Digite a nova marca (ou ENTER para manter): ");
-                let novaMarca = readlinesync.question("");
-
-                // cria produto atualizado
-                
+                // Criar instância da subclasse Produtos — NÃO instancie Ecommerce (é abstract)
                 const produtoAtualizado = new Produtos(
-                existente.id,
-                novoNome !== "" ? novoNome : existente.nome,
-                existente.categoria,
-                novoPreco > 0 ? novoPreco : existente.preco,
-                novaQuantidade >= 0 ? novaQuantidade : existente.quantidade,
-                novaMarca !== "" ? novaMarca : existente.marca,
-                existente.especificacoes   // ← mantém a antiga (ou você pode pedir nova)
-            );
-
+                    idAtualizar,
+                    novoNome,
+                    novaCategoria,
+                    novoPreco,
+                    novaQuantidade,
+                    novaMarca,
+                    novaDescricao
+                );
 
                 produtosController.atualizar(produtoAtualizado);
-
                 KeyPress();
                 break;
+            }
+
 
 
             // ➤ DELETAR
